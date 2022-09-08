@@ -54,7 +54,8 @@ class AddToCartView(View):
 
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             # Serialization
-            return JsonResponse(cart)
+            return JsonResponse({'total': get_cart_total_price(cart),
+                                 'cart': cart})
         # else
         return HttpResponseRedirect(reverse('core:product_list'))
 
@@ -100,7 +101,19 @@ class VerifyView(View):
 class CheckoutView(View):
     def get(self, request):
         form = forms.InvoiceForm()
-        return render(request, 'core/checkout.html', {'form' : form})
+        cart = get_cart(request)
+        objects = models.Product.objects.filter(id__in=list(cart.keys()))
+        cart_objects = {}
+        for id,count in cart.items():
+            obj = objects.get(id=id)
+            cart_objects[id] = {
+                'obj': obj,
+                'price': (obj.price - obj.price * obj.discount) * count,
+                'count': count,
+            }
+        return render(request, 'core/checkout.html', {'form': form,
+                                                      'total': get_cart_total_price(cart),
+                                                      'cart': cart_objects})
 
     def post(self, request):
         form = forms.InvoiceForm(request.POST)

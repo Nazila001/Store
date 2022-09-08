@@ -1,9 +1,37 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <h1>Invoice</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th><th>Count</th><th>Discount</th>
+                <th>Unit Price</th><th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id,item in cart.items %}
+            <tr class="item-row" data-id="{{ id }}">
+                <td>{{ item.obj.name }}</td>
+                <td>{{ item.count }}</td>
+                <td>{{ item.obj.discount }}</td>
+                <td>{{ item.obj.price }}</td>
+                <td>{{ item.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr/>
+    Total: <span id="total-price">{{ total }}</span>
 
 
-    <a href="{% url 'core:pay' %}" class="btn btn-primary">Pay</a>
+    <form mothod="post" action="{% url 'core:checkout' %}">
+        {% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+        <input type = 'submit'  class="btn btn-primary" value = "Pay"/>
+    </form>
 
 
 {% endblock %}
