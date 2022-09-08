@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th><th>Count</th><th>Discount</th>
+                <th>Unit Price</th><th>Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id,item in cart.items %}
+            <tr class="item-row" data-id="{{ id }}">
+                <td>{{ item.obj.name }}</td>
+                <td>{{ item.count }}</td>
+                <td>{{ item.obj.discount }}</td>
+                <td>{{ item.obj.price }}</td>
+                <td>{{ item.price }}</td>
+                <td><a class="btn btn-secondary cart-remove-link" href="{% url 'core:cart_remove' id=id %}" data-id="{{ id }}">X</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr/>
+    Total: <span id="total-price">{{ total }}</span>
+    <a href="{% url 'core:checkout' %}" class="btn btn-primary">Checkout</a>
+
+    <script type="text/javascript">
+    $('.cart-remove-link').click(function(e){
+        link = $(this);
+        target_link = link.attr('href');
+        $.get(target_link, function (res, status, xhr){
+            $('#total-price').html(res.total);
+            if(!Object.keys(res.cart).includes(link.attr('data-id'))){
+                link.parents('tr').remove();
+            }
+        });
+        e.preventDefault();
+        return false;
+    });
+</script>
+{% endblock %}
