@@ -1,0 +1,36 @@
+
+
+<header>
+      <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-8 col-md-7 py-4">
+
+            </div>
+            <div class="col-sm-4 offset-md-1 py-4">
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="navbar navbar-dark bg-dark box-shadow">
+        <div class="container d-flex justify-content-between">
+          <a href="#" class="navbar-brand d-flex align-items-center">
+            Phone Store
+          </a>
+        </div>
+          <div style="color: white; margin-right: 30px;">
+              <span id="cart"><a href="{% url 'core:cart_show' %}">Cart (<span id="cart-count">{{ request.session.cart|length }}</span>)</a></span>
+              {%  if user.is_authenticated %}
+                    {{ user.username }}
+                    <a class="" href="{% url 'logout' %}">
+                        Logout
+                    </a>
+              {% else %}
+                    <a class="btn btn-secondary" href="{% url 'login' %}">
+                        Login
+                    </a>
+              {% endif %}
+          </div>
+      </div>
+</header>
